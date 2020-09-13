@@ -1,10 +1,4 @@
-FROM openjdk:8-jdk-alpine
-EXPOSE 8080
-ARG JAR_FILE=target/*.jar
-COPY ${JAR_FILE} weather-report.jar
-ENTRYPOINT ["java","-jar","/weather-report.jar"]
-#FROM openjdk:8-jdk-alpine
-#EXPOSE 8080
-#ARG JAR_FILE=target/*.jar
-#COPY ${JAR_FILE} weather-report.jar
-#ENTRYPOINT ["java","-jar","/weather-report.jar"]
+FROM openjdk:8
+ADD target/weather-report.jar weather-report.jar
+EXPOSE 8085
+ENTRYPOINT ["java","-jar","weather-report.jar"]
