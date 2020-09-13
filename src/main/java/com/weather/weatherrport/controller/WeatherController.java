@@ -20,14 +20,16 @@ public class WeatherController {
     @Autowired
     private WeatherService weatherService;
 
+    //all 4 days details
     @GetMapping(value = "/forecast/{city}", produces = MediaType.APPLICATION_JSON_VALUE)
     public  List<DailyFortune> getWeatherForFourDays(@PathVariable String city) {
     	return weatherService.weatherForecast(city);
     }
     
+    //1-4 four individual days
     @GetMapping(value = "/forecast/{city}/{whichDay}", produces = MediaType.APPLICATION_JSON_VALUE)
     public  List<DailyFortune> getWeather(@PathVariable String city,
     		@PathVariable int whichDay) {
-    	return weatherService.weatherForecast(city, whichDay);
+    	return weatherService.weatherForecastByDay(city, whichDay);
     }
 }

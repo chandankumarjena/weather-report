@@ -3,7 +3,6 @@ package com.weather.weatherrport.service;
 import java.math.BigDecimal;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
@@ -48,12 +47,32 @@ public class WeatherService {
     	return dailyFortunes;
     }
     
-    public List<DailyFortune> weatherForecast(String city, int whichDay) {
+    public List<DailyFortune> weatherForecastByDay(String city, int whichDay) {
     	WeatherDescription weatherMap =
           this.restTemplate.getForObject(this.url(city), WeatherDescription.class);
-    	List<DailyFortune> dailyFortunes =  new LinkedList<DailyFortune>();
+    	List<DailyFortune> dailyFortunes = null;
     	List<WeatherDetails> weatherDetails = weatherMap.getList();
-    	
+    	int totalData = weatherDetails.size();
+    	if(totalData == 36) {
+    		if(whichDay == 1) {
+    			dailyFortunes = getFortunes(weatherDetails.subList(0, 8));
+    		} else if(whichDay == 2) {
+    			dailyFortunes = getFortunes(weatherDetails.subList(9, 17));
+    		} else if(whichDay == 3) {
+    			dailyFortunes = getFortunes(weatherDetails.subList(18, 27));
+    		} else if(whichDay == 4) {
+    			dailyFortunes = getFortunes(weatherDetails.subList(28, 35));
+    		} else {
+    			dailyFortunes = new LinkedList<DailyFortune>();
+    		}
+    	} else {
+    		dailyFortunes =  getFortunes(weatherDetails);
+    	}
+    	return dailyFortunes;
+    }
+
+    private List<DailyFortune> getFortunes(List<WeatherDetails> weatherDetails) {
+		List<DailyFortune> dailyFortunes = new LinkedList<DailyFortune>();
     	for(WeatherDetails weatherDetail : weatherDetails) {
     		DailyFortune df = new DailyFortune();
     		df.setDateTime(weatherDetail.getDt_txt());
@@ -67,10 +86,10 @@ public class WeatherService {
     		} 
     		dailyFortunes.add(df);
     	}
-    	return dailyFortunes;
-    }
+		return dailyFortunes;
+	}
 
-    private String url(String city) {
+	private String url(String city) {
         return String.format(URI.concat("?q=%s").concat("&appid=%s"), city, API_ID);
     }
 }
