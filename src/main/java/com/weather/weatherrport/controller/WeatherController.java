@@ -21,7 +21,13 @@ public class WeatherController {
     private WeatherService weatherService;
 
     @GetMapping(value = "/forecast/{city}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public  List<DailyFortune> getWeather(@PathVariable String city) {
+    public  List<DailyFortune> getWeatherForFourDays(@PathVariable String city) {
     	return weatherService.weatherForecast(city);
+    }
+    
+    @GetMapping(value = "/forecast/{city}/{whichDay}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public  List<DailyFortune> getWeather(@PathVariable String city,
+    		@PathVariable int whichDay) {
+    	return weatherService.weatherForecast(city, whichDay);
     }
 }

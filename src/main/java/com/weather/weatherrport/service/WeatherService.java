@@ -47,6 +47,28 @@ public class WeatherService {
     	}
     	return dailyFortunes;
     }
+    
+    public List<DailyFortune> weatherForecast(String city, int whichDay) {
+    	WeatherDescription weatherMap =
+          this.restTemplate.getForObject(this.url(city), WeatherDescription.class);
+    	List<DailyFortune> dailyFortunes =  new LinkedList<DailyFortune>();
+    	List<WeatherDetails> weatherDetails = weatherMap.getList();
+    	
+    	for(WeatherDetails weatherDetail : weatherDetails) {
+    		DailyFortune df = new DailyFortune();
+    		df.setDateTime(weatherDetail.getDt_txt());
+    		df.setMax_temp(weatherDetail.getMain().getTemp_max());
+    		df.setClimate(weatherDetail.getWeather().get(0).getMain());
+    		df.setClimateDescription(weatherDetail.getWeather().get(0).getDescription());
+    		if(weatherDetail.getWeather().get(0).getMain().contains("Rain")) {
+    			df.setFortuneMessage("carry umbrela");
+    		} else if(weatherDetail.getMain().getTemp_max().compareTo(new BigDecimal("313")) == 1) {
+    			df.setFortuneMessage("Use sunscreen lotion");
+    		} 
+    		dailyFortunes.add(df);
+    	}
+    	return dailyFortunes;
+    }
 
     private String url(String city) {
         return String.format(URI.concat("?q=%s").concat("&appid=%s"), city, API_ID);
