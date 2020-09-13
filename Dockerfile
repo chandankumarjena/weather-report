@@ -1,10 +1,5 @@
-# For Java 11, try this
-FROM adoptopenjdk/openjdk11:alpine-jre
-
+FROM openjdk:8-jdk-alpine
 EXPOSE 8080
-
-# Refer to Maven build -> finalName
-ARG JAR_FILE=target/weather-report.jar
-
-# java -jar /opt/app/app.jar
-ENTRYPOINT ["java","-jar","weather-report.jar"]
+ARG JAR_FILE=target/*.jar
+COPY ${JAR_FILE} weather-report.jar
+ENTRYPOINT ["java","-jar","/weather-report.jar"]
